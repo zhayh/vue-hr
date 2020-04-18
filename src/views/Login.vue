@@ -1,7 +1,8 @@
 <template>
   <div>
     <!-- 登录表单区 -->
-    <el-form class="login_container" ref="loginFormRef" label-width="0px" :model="loginForm" :rules="loginFormRule">
+    <el-form class="login_container" ref="loginFormRef" label-width="0px"
+             :model="loginForm" :rules="loginFormRule">
       <h3 class="login_title">系统登录</h3>
       <!-- 用户名 -->
       <el-form-item prop="username">
@@ -9,7 +10,8 @@
       </el-form-item>
       <!-- 密码 -->
       <el-form-item prop="password">
-        <el-input v-model="loginForm.password" prefix-icon="iconfont icon-password" show-password></el-input>
+        <el-input v-model="loginForm.password" prefix-icon="iconfont icon-password"
+                  @keydown.enter.native="login" show-password></el-input>
       </el-form-item>
       <!-- 记住我 -->
       <el-checkbox v-model="checked" class="login_remember">记住我</el-checkbox>
@@ -23,10 +25,8 @@
 </template>
 
 <script>
-import { postKeyValueRequest } from '../utils/api'
 export default {
-  name: '',
-  components: {},
+  name: 'Login',
   data () {
     return {
       // 登录表单的数据绑定对象
@@ -45,7 +45,7 @@ export default {
         // 验证密码是否合法
         password: [
           { required: true, $message: '请输入密码', trigger: 'blur' },
-          { min: 3, max: 20, $message: '长度在 6 到 20 个字符', trigger: 'blur' }
+          { min: 3, max: 20, $message: '长度在 3 到 20 个字符', trigger: 'blur' }
         ]
       }
     }
@@ -62,17 +62,16 @@ export default {
         if (!valid) {
           return this.$message.error('用户名或密码格式不正确，请重新输入')
         }
-        const resp = await postKeyValueRequest('/doLogin', this.loginForm)
+        const resp = await this.postKeyValueRequest('/doLogin', this.loginForm)
         console.log(resp)
         if (resp) {
           console.log(resp.obj)
-          this.$message.success('登录成功')
           // 1. 将登录成功之后的user保存到客户端的sessionStorage中
           //    1.1 项目中出了登录之外的其它API接口，必须在登录之后才能访问
           //    1.2 user只应在当前网站打开期间生效，所以将user保存在sessionStorage中
-          window.sessiontStorate.setItem("user", JSON.stringify(resp.obj));
+          window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
           // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
-          this.$router.replace('/home')
+          await this.$router.replace('/home')
         }
       })
     }
@@ -103,7 +102,7 @@ export default {
 }
 .login_remember {
   text-align: left;
-  margin: 0px 0px 15px 0px;
+  margin: 0 0 15px 0;
 }
 .btn {
   display: flex;
