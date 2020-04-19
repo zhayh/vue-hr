@@ -69,9 +69,11 @@ export default {
           // 1. 将登录成功之后的user保存到客户端的sessionStorage中
           //    1.1 项目中出了登录之外的其它API接口，必须在登录之后才能访问
           //    1.2 user只应在当前网站打开期间生效，所以将user保存在sessionStorage中
-          window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
+          window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
+          // 获取查询字符串中的path是否包含redirect
+          let path = this.$route.query.redirect
           // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
-          await this.$router.replace('/home')
+          await this.$router.replace((path === '/' || path === undefined) ? '/home' : path)
         }
       })
     }
@@ -80,32 +82,35 @@ export default {
 </script>
 
 <style scoped>
-.login_container {
-  width: 400px;
-  background-clip: padding-box;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #cac6c6;
-  border-radius: 15px;
-  padding: 15px 35px 15px 35px;
-  background: #fff;
-  /* box居中设置 */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.login_title {
-  width: 100%;
-  margin: 15px auto 20px auto;
-  text-align: center;
-  color: #505458;
-}
-.login_remember {
-  text-align: left;
-  margin: 0 0 15px 0;
-}
-.btn {
-  display: flex;
-  justify-content: flex-end;
-}
+  .login_container {
+    width: 400px;
+    background-clip: padding-box;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+    border-radius: 15px;
+    padding: 15px 35px 15px 35px;
+    background: #fff;
+    /* box居中设置 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .login_title {
+    width: 100%;
+    margin: 15px auto 20px auto;
+    text-align: center;
+    color: #505458;
+  }
+
+  .login_remember {
+    text-align: left;
+    margin: 0 0 15px 0;
+  }
+
+  .btn {
+    display: flex;
+    justify-content: flex-end;
+  }
 </style>
