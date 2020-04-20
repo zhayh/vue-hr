@@ -24,6 +24,7 @@
 
 <script>
 import { postKeyValueRequest } from '../utils/api'
+
 export default {
   name: '',
   components: {},
@@ -56,24 +57,45 @@ export default {
       console.log(this.$refs)
       this.$refs.loginFormRef.resetFields()
     },
+    // login () {
+    //   this.$refs.loginFormRef.validate(async valid => {
+    //     // console.log(valid)
+    //     if (!valid) {
+    //       return this.$message.error('用户名或密码格式不正确，请重新输入')
+    //     }
+    //     const resp = await postKeyValueRequest('/doLogin', this.loginForm)
+    //     console.log(resp)
+    //     if (resp) {
+    //       console.log(resp.obj)
+    //       this.$message.success('登录成功')
+    //       // 1. 将登录成功之后的user保存到客户端的sessionStorage中
+    //       //    1.1 项目中出了登录之外的其它API接口，必须在登录之后才能访问
+    //       //    1.2 user只应在当前网站打开期间生效，所以将user保存在sessionStorage中
+    //       window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
+    //       // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
+    //       this.$router.replace('/home')
+    //     }
+    //   })
+    // },
     login () {
-      this.$refs.loginFormRef.validate(async valid => {
+      this.$refs.loginFormRef.validate(valid => {
         // console.log(valid)
         if (!valid) {
           return this.$message.error('用户名或密码格式不正确，请重新输入')
         }
-        const resp = await postKeyValueRequest('/doLogin', this.loginForm)
-        console.log(resp)
-        if (resp) {
-          console.log(resp.obj)
-          this.$message.success('登录成功')
-          // 1. 将登录成功之后的user保存到客户端的sessionStorage中
-          //    1.1 项目中出了登录之外的其它API接口，必须在登录之后才能访问
-          //    1.2 user只应在当前网站打开期间生效，所以将user保存在sessionStorage中
-          window.sessiontStorate.setItem("user", JSON.stringify(resp.obj));
-          // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
-          this.$router.replace('/home')
-        }
+        postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+          console.log(resp)
+          if(resp) {
+            console.log(resp.obj)
+            this.$message.success('登录成功')
+            // 1. 将登录成功之后的user保存到客户端的sessionStorage中
+            //    1.1 项目中出了登录之外的其它API接口，必须在登录之后才能访问
+            //    1.2 user只应在当前网站打开期间生效，所以将user保存在sessionStorage中
+            window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
+            // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
+            this.$router.replace('/home')
+          }
+        })
       })
     }
   }
@@ -81,32 +103,35 @@ export default {
 </script>
 
 <style scoped>
-.login_container {
-  width: 400px;
-  background-clip: padding-box;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #cac6c6;
-  border-radius: 15px;
-  padding: 15px 35px 15px 35px;
-  background: #fff;
-  /* box居中设置 */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.login_title {
-  width: 100%;
-  margin: 15px auto 20px auto;
-  text-align: center;
-  color: #505458;
-}
-.login_remember {
-  text-align: left;
-  margin: 0px 0px 15px 0px;
-}
-.btn {
-  display: flex;
-  justify-content: flex-end;
-}
+  .login_container {
+    width: 400px;
+    background-clip: padding-box;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+    border-radius: 15px;
+    padding: 15px 35px 15px 35px;
+    background: #fff;
+    /* box居中设置 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .login_title {
+    width: 100%;
+    margin: 15px auto 20px auto;
+    text-align: center;
+    color: #505458;
+  }
+
+  .login_remember {
+    text-align: left;
+    margin: 0px 0px 15px 0px;
+  }
+
+  .btn {
+    display: flex;
+    justify-content: flex-end;
+  }
 </style>
