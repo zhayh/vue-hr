@@ -39,7 +39,7 @@
             <el-breadcrumb-item>{{this.$router.currentRoute.name}}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="home_welcome" v-else>欢迎来到微人事</div>
-          <router-view/>
+          <router-view class="home_main"/>
         </el-main>
       </el-container>
     </el-container>
@@ -123,5 +123,8 @@ export default {
     font-size: 30px;
     color: #4078aa;
     padding-top: 50px;
+  }
+  .home_main {
+    margin-top: 16px;
   }
 </style>
