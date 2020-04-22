@@ -25,6 +25,8 @@
 </template>
 
 <script>
+// import { initMenu } from '../utils/menus'
+
 export default {
   name: 'Login',
   data () {
@@ -70,6 +72,10 @@ export default {
           //    1.1 项目中出了登录之外的其它API接口，必须在登录之后才能访问
           //    1.2 user只应在当前网站打开期间生效，所以将user保存在sessionStorage中
           window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
+
+          // 此处加载，当按 F5或刷新页面后会数据丢失，造成导航栏空白，使用路由前置导航守卫
+          // initMenu(this.$router, this.$store)
+
           // 获取查询字符串中的path是否包含redirect
           let path = this.$route.query.redirect
           // 2. 通过编程式导航跳转到后台主页，路由地址是 /home

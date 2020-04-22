@@ -48,7 +48,7 @@ export const postKeyValueRequest = (url, params) => {
   })
 }
 
-// 传递json数据的post请求
+// 传递 json数据的 post请求
 export const postRequest = (url, params) => {
   return axios({
     method: 'post',

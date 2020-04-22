@@ -27,7 +27,7 @@ Vue.config.productionTip = false
 // 路由的前置导航守卫
 router.beforeEach((to, from, next) => {
   if (to.path === '/') {
-    next();
+    next()
   } else {
     if(window.sessionStorage.getItem('user')) {
       initMenu(router, store)
@@ -38,7 +38,6 @@ router.beforeEach((to, from, next) => {
       // 未登录用户跳转到登录页
       next('/?redirect=' + to.path)
     }
-
   }
 })
 

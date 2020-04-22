@@ -8,6 +8,12 @@ Vue.use(VueRouter)
 const routes = [
   { path: '/', name: 'Login', component: Login, hidden: true },
   { path: '/home', name: 'Home', component: Home, hidden: true }
+  // {
+  //   path: '/home', name: 'Home', component: Home, children: [
+  //     { path: '/home', name: 'Home', component: Home },
+  //     { path: '/home', name: 'Home', component: Home },
+  //   ]
+  // }
 ]
 
 const router = new VueRouter({

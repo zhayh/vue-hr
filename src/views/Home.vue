@@ -16,6 +16,7 @@
       </el-header>
       <el-container>
         <el-aside width="200px">
+          <!-- 侧边栏导航菜单 -->
           <el-menu router unique-opened>
             <el-submenu :index="index.toString()" v-for="(item, index) in routes"
                         v-if="!item.hidden" :key="index">
@@ -31,6 +32,7 @@
           </el-menu>
         </el-aside>
         <el-main>
+          <!-- 导航面包屑 -->
           <el-breadcrumb separator-class="el-icon-arrow-right"
                          v-if="this.$router.currentRoute.path !== '/home'">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -70,7 +72,7 @@ export default {
           window.sessionStorage.removeItem('user')
           // 2. 路由跳转到首页
           this.$router.replace('/')
-          // 3. 清空store存储的菜单信息
+          // 3. 清空 store存储的菜单信息
           this.$store.commit('initRoutes', [])
         }).catch(() => {
           this.$message({
