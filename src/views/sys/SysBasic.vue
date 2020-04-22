@@ -21,7 +21,7 @@ export default {
   name: 'SysBasic',
   data () {
     return {
-      activeName: ''
+      activeName: 'second'
     }
   },
   components: {
