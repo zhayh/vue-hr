@@ -7,6 +7,8 @@
       <el-button type="primary" icon="el-icon-plus" size="small" @click="addPosition">
         添加
       </el-button>
+    </div>
+    <div>
       <el-table :data="positions" stripe border type="small" style="width: 70%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="56"> </el-table-column>
         <el-table-column prop="id" label="编号" width="56"> </el-table-column>
@@ -35,7 +37,6 @@
       </span>
     </el-dialog>
   </div>
-
 </template>
 
 <script>
@@ -43,24 +44,31 @@ export default {
   name: 'Position',
   data () {
     return {
+      // 添加输入框的数据
       pos: {
         name: ''
       },
+      // 表格显示的数据
       positions: [],
+      // 更新按钮的数据
       updatePos: {
         name: ''
       },
+      // 对话框显示与否的标志位
       dialogVisible: false,
+      // 批量删除的数据记录
       multipleSelection: []
     }
   },
   methods: {
+    // 表格数据初始化处理
     async initPositions () {
       const data = await this.getRequest('/system/basic/pos/')
       if (data) {
         this.positions = data.obj
       }
     },
+    // 添加新记录的事件处理
     async addPosition () {
       if (this.pos.name) {
         const resp = await this.postRequest('/system/basic/pos/', this.pos)
@@ -72,11 +80,13 @@ export default {
         this.$message.error('职位名称不能为空')
       }
     },
+    // 显示修改对话框
     showEditDialog (index, data) {
-      // this.updatePos = data
-      Object.assign(this.updatePos, data)
+      // this.updatePos = data // 浅拷贝会改变表格的记录
+      Object.assign(this.updatePos, data)  // 使用深拷贝
       this.dialogVisible = true
     },
+    // 弹框确认修改的事件处理
     async doUpdate() {
       const resp = await this.putRequest('/system/basic/pos/', this.updatePos)
       if (resp) {
@@ -85,6 +95,7 @@ export default {
         this.dialogVisible = false
       }
     },
+    // 表格记录的删除按钮的事件处理
     handleDelete (index, data) {
       this.$confirm('此操作将永久删除' + data.name + '职位, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -101,16 +112,19 @@ export default {
         });
       });
     },
+    // 记录多选的处理
     handleSelectionChange(val) {
       console.log(val)
       this.multipleSelection = val
     },
+    // 批量删除
     deleteMany() {
       this.$confirm('此操作将永久删除' + this.multipleSelection.length + '条记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        // 生成删除记录 id的查询字符串
         let ids = "?"
         this.multipleSelection.forEach(item => {
           ids += "ids=" + item.id + '&'
@@ -126,6 +140,7 @@ export default {
       });
     }
   },
+  // 在页面元素挂载后加载数据
   mounted () {
     this.initPositions()
   }
