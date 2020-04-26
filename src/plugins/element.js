@@ -12,11 +12,12 @@ import {
   Breadcrumb, BreadcrumbItem,
   Tabs, TabPane,
   Table, TableColumn, Dialog, Tag,
-  Select, Option
+  Select, Option, Switch
 } from 'element-ui'
 
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Dialog)
