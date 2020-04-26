@@ -11,9 +11,11 @@ import {
   Menu, Submenu, MenuItem,
   Breadcrumb, BreadcrumbItem,
   Tabs, TabPane,
-  Table, TableColumn, Dialog, Tag
+  Table, TableColumn, Dialog, Tag,
+  Switch
 } from 'element-ui'
 
+Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Dialog)
