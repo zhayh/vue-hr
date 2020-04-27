@@ -13,9 +13,11 @@ import {
   Tabs, TabPane,
   Table, TableColumn, Dialog, Tag,
   Select, Option, Switch,
-  Collapse, CollapseItem, Card
+  Collapse, CollapseItem, Card,
+  Tree
 } from 'element-ui'
 
+Vue.use(Tree)
 Vue.use(Collapse)
 Vue.use(CollapseItem)
 Vue.use(Card)
