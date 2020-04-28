@@ -1,6 +1,7 @@
 import { Message } from 'element-ui'
 // 导入axios库
 import axios from 'axios'
+import router from '../router'
 
 // 响应码的拦截
 axios.interceptors.response.use(success => {
@@ -19,6 +20,7 @@ axios.interceptors.response.use(success => {
     Message.error({ message: '权限不足，请联系管理员' })
   } else if (error.response.status === 401) {
     Message.error({ message: '尚未登录，请登录' })
+    router.replace('/')
   } else {
     if (error.response.data.msg) {
       Message.error({ message: error.response.data.msg })
