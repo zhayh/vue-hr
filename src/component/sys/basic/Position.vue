@@ -9,7 +9,9 @@
       </el-button>
     </div>
     <div>
-      <el-table :data="positions" stripe border type="mini" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table :data="positions" stripe border type="mini" style="width: 100%"
+                @selection-change="handleSelectionChange"
+                v-loading="loading" element-loading-text="正在加载...">
         <el-table-column type="selection" width="56"> </el-table-column>
         <el-table-column prop="id" label="编号" width="56"> </el-table-column>
         <el-table-column prop="name" label="职位名称" width="150"> </el-table-column>
@@ -68,13 +70,16 @@ export default {
       // 对话框显示与否的标志位
       dialogVisible: false,
       // 批量删除的数据记录
-      multipleSelection: []
+      multipleSelection: [],
+      loading: true
     }
   },
   methods: {
     // 表格数据初始化处理
     async initPositions () {
+      this.loading = true
       const data = await this.getRequest('/system/basic/pos/')
+      this.loading = false
       if (data) {
         this.positions = data.obj
       }

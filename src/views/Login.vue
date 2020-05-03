@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- 登录表单区 -->
-    <el-form class="login_container" ref="loginFormRef" label-width="0px"
-             :model="loginForm" :rules="loginFormRule">
+    <el-form class="login_container" ref="loginFormRef" label-width="0px" :model="loginForm"
+             :rules="loginFormRule" v-loading="loading" element-loading-text="正在加载...">
       <h3 class="login_title">系统登录</h3>
       <!-- 用户名 -->
       <el-form-item prop="username">
@@ -31,6 +31,8 @@ export default {
   name: 'Login',
   data () {
     return {
+      // 加载标识
+      loading: false,
       // 登录表单的数据绑定对象
       loginForm: {
         username: 'admin',
@@ -64,7 +66,9 @@ export default {
         if (!valid) {
           return this.$message.error('用户名或密码格式不正确，请重新输入')
         }
+        this.loading = true
         const resp = await this.postKeyValueRequest('/doLogin', this.loginForm)
+        this.loading = false
         console.log(resp)
         if (resp) {
           console.log(resp.obj)

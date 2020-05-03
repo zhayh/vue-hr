@@ -15,9 +15,11 @@ import {
   Select, Option, Switch,
   Collapse, CollapseItem, Card,
   Tree,
-  Popover
+  Popover,
+  Loading
 } from 'element-ui'
 
+Vue.use(Loading.directive);
 Vue.use(Popover)
 Vue.use(Tree)
 Vue.use(Collapse)
