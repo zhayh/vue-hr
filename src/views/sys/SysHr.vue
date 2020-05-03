@@ -2,14 +2,15 @@
   <div>
     <div style="margin-top: 10px; display: flex; justify-content: center">
       <el-input v-model="keywords" placeholder="通过用户名搜索用户..." prefix-icon="el-icon-search"
-                style="width: 400px; margin-right: 10px"></el-input>
-      <el-button type="primary" icon="el-icon-search">搜索</el-button>
+                style="width: 400px; margin-right: 10px" @keydown.enter.native="doSearch"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="doSearch">搜索</el-button>
     </div>
     <div class="hr-container">
       <el-card class="hr-card" v-for="(hr, index) in hrs" :key="index">
         <div slot="header" class="clearfix">
           <span>{{hr.name}}</span>
-          <el-button style="float: right; padding: 3px 0; color: #ff0000" type="text" icon="el-icon-delete"></el-button>
+          <el-button style="float: right; padding: 3px 0; color: #ff0000"
+                     type="text" icon="el-icon-delete" @click="deleteHr(hr)"></el-button>
         </div>
         <div>
           <div class="img-container">
@@ -62,13 +63,12 @@ export default {
   },
   methods: {
     async initHrs () {
-      const resp = await this.getRequest('/system/hr/')
+      const resp = await this.getRequest('/system/hr/?keywords=' + this.keywords)
       if (resp) {
         this.hrs = resp.obj
       }
     },
     async changeEnabled(hr) {
-      console.log(hr)
       const resp = await this.putRequest('/system/hr/status', hr)
       if(resp) {
         this.initHrs()
@@ -111,6 +111,26 @@ export default {
           }
         });
       }
+    },
+    doSearch() {
+      this.initHrs()
+    },
+    deleteHr(hr) {
+      this.$confirm('此操作将永久删除' + hr.name + '用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if(this.deleteRequest('/system/hr/' + hr.id)) {
+          this.initHrs()
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     }
   }
 }
