@@ -22,15 +22,23 @@
             <div>地址： {{hr.address}}</div>
             <div>用户状态：
               <el-switch v-model="hr.enabled" active-color="#13ce66" inactive-color="#ff4949"
-                         active-text="启用" inactive-text="禁用"></el-switch>
+                         active-text="启用" inactive-text="禁用" @change="changeEnabled(hr)"></el-switch>
             </div>
             <div>用户角色:
               <el-tag v-for="(role, rindex) in hr.roles" :key="rindex" type="success"
                       style="margin-right: 5px" size="mini">{{role.nameZh}}
               </el-tag>
-              <el-button icon="el-icon-more" size="mini" type="text"></el-button>
+              <el-popover placement="right" title="角色列表" width="200" trigger="click"
+                          @show="showPop(hr)" @hide="hidePop(hr)">
+                <el-select v-model="selectedRoles" placeholder="请选择" size="mini" multiple>
+                  <el-option v-for="(role, indexj) in allRoles" :key="indexj" :label="role.nameZh"
+                    :value="role.id"> </el-option>
+                </el-select>
+                <el-button slot="reference" icon="el-icon-more" size="mini" type="text"></el-button>
+              </el-popover>
+
             </div>
-            <div>备注： {{hr.mark}}</div>
+            <div>备注： {{hr.remark}}</div>
           </div>
         </div>
       </el-card>
@@ -44,7 +52,9 @@ export default {
   data () {
     return {
       keywords: '',
-      hrs: []
+      hrs: [],
+      allRoles: [],
+      selectedRoles: []
     }
   },
   mounted () {
@@ -55,6 +65,51 @@ export default {
       const resp = await this.getRequest('/system/hr/')
       if (resp) {
         this.hrs = resp.obj
+      }
+    },
+    async changeEnabled(hr) {
+      console.log(hr)
+      const resp = await this.putRequest('/system/hr/status', hr)
+      if(resp) {
+        this.initHrs()
+      }
+    },
+    async initAllRoles() {
+      const resp = await this.getRequest('/system/hr/roles')
+      if(resp) {
+        this.allRoles = resp.obj
+      }
+    },
+    showPop(hr) {
+      this.initAllRoles()
+      this.selectedRoles = []
+      hr.roles.forEach(role => {
+        this.selectedRoles.push(role.id)
+      })
+    },
+    hidePop(hr) {
+      let roles = [];
+      // 比较新选项与已选项是否一致
+      // Object.assign(roles, hr.roles);
+      let flag = false;
+      if(hr.roles.length !== this.selectedRoles.length) {
+        flag = true
+      } else {
+        // 获取新选项与已选项的差集，不为零则更新
+        let tmp = new Set(this.selectedRoles)
+        flag = new Set([...hr.roles].filter(role => !tmp.has(role.id))).size
+      }
+      // flag为true，则发送更新用户角色的请求
+      if (flag) {
+        let url = '/system/hr/roles?hrid=' + hr.id;
+        this.selectedRoles.forEach(sr => {
+          url += '&rids=' + sr;
+        });
+        this.putRequest(url).then(resp => {
+          if (resp) {
+            this.initHrs();
+          }
+        });
       }
     }
   }

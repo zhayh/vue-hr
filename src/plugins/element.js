@@ -14,9 +14,11 @@ import {
   Table, TableColumn, Dialog, Tag,
   Select, Option, Switch,
   Collapse, CollapseItem, Card,
-  Tree
+  Tree,
+  Popover
 } from 'element-ui'
 
+Vue.use(Popover)
 Vue.use(Tree)
 Vue.use(Collapse)
 Vue.use(CollapseItem)
