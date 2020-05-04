@@ -14,11 +14,12 @@ import {
   Table, TableColumn, Dialog, Tag,
   Select, Option, Switch,
   Collapse, CollapseItem, Card,
-  Tree,
-  Popover,
-  Loading, Image
+  Tree, Popover,
+  Loading, Image,
+  Pagination
 } from 'element-ui'
 
+Vue.use(Pagination);
 Vue.use(Image);
 Vue.use(Loading.directive);
 Vue.use(Popover)

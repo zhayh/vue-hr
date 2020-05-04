@@ -2,7 +2,7 @@
   <div>
     <div>
       <el-input size="small" class="input_type" placeholder="添加职位..."
-        prefix-icon="el-icon-plus" @keydown.enter.native="addPosition" v-model="pos.name">
+                prefix-icon="el-icon-plus" @keydown.enter.native="addPosition" v-model="pos.name">
       </el-input>
       <el-button type="primary" icon="el-icon-plus" size="small" @click="addPosition">
         添加
@@ -12,10 +12,10 @@
       <el-table :data="positions" stripe border type="mini" style="width: 100%"
                 @selection-change="handleSelectionChange"
                 v-loading="loading" element-loading-text="正在加载...">
-        <el-table-column type="selection" width="56"> </el-table-column>
-        <el-table-column prop="id" label="编号" width="56"> </el-table-column>
-        <el-table-column prop="name" label="职位名称" width="150"> </el-table-column>
-        <el-table-column prop="createDate" label="创建时间" width="200"> </el-table-column>
+        <el-table-column type="selection" width="56"></el-table-column>
+        <el-table-column prop="id" label="编号" width="56"></el-table-column>
+        <el-table-column prop="name" label="职位名称" width="150"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" width="200"></el-table-column>
         <el-table-column prop="enabled" label="是否启用" width="120">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.enabled" type="success">已启用</el-tag>
@@ -29,6 +29,14 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pageable">
+        <el-pagination background :total="pageInfo.total" :page-sizes="[5, 10, 20, 50, 100]"
+                       :page-size="5"
+                       @current-change="handleCurrentChange"
+                       @size-change="handleSizeChange"
+                       layout="sizes, prev, pager, next, jumper, ->, total, slot">
+        </el-pagination>
+      </div>
       <el-button type="danger" size="small" style="margin-top: 8px" @click="deleteMany"
                  :disabled="multipleSelection.length === 0">
         批量删除
@@ -41,11 +49,11 @@
       </div>
       <div>
         <el-tag>是否启用</el-tag>
-        <el-switch v-model="updatePos.enabled" class="update_input" ></el-switch>
+        <el-switch v-model="updatePos.enabled" class="update_input"></el-switch>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false" size="small" >取 消</el-button>
-        <el-button type="primary" @click="doUpdate" size="small" >确 定</el-button>
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="doUpdate" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -71,17 +79,33 @@ export default {
       dialogVisible: false,
       // 批量删除的数据记录
       multipleSelection: [],
-      loading: true
+      loading: true,
+      pageInfo: {
+        total: 0,
+        page: 1,
+        size: 5
+      }
+
     }
   },
   methods: {
+    handleSizeChange(currestSize) {
+      this.pageInfo.size = currestSize
+      this.initPositions()
+    },
+    handleCurrentChange (currentPage) {
+      this.pageInfo.page = currentPage
+      this.initPositions()
+    },
     // 表格数据初始化处理
     async initPositions () {
       this.loading = true
-      const data = await this.getRequest('/system/basic/pos/')
+      const resp = await this.getRequest('/system/basic/pos/?page=' + this.pageInfo.page
+        + '&size=' + this.pageInfo.size)
       this.loading = false
-      if (data) {
-        this.positions = data.obj
+      if (resp) {
+        this.positions = resp.obj.list
+        this.pageInfo.total = resp.obj.total
       }
     },
     // 添加新记录的事件处理
@@ -103,7 +127,7 @@ export default {
       this.dialogVisible = true
     },
     // 弹框确认修改的事件处理
-    async doUpdate() {
+    async doUpdate () {
       const resp = await this.putRequest('/system/basic/pos/', this.updatePos)
       if (resp) {
         this.initPositions()
@@ -129,21 +153,21 @@ export default {
       });
     },
     // 记录多选的处理
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       console.log(val)
       this.multipleSelection = val
     },
     // 批量删除
-    deleteMany() {
+    deleteMany () {
       this.$confirm('此操作将永久删除' + this.multipleSelection.length + '条记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         // 生成删除记录 id的查询字符串
-        let ids = "?"
+        let ids = '?'
         this.multipleSelection.forEach(item => {
-          ids += "ids=" + item.id + '&'
+          ids += 'ids=' + item.id + '&'
         })
         this.deleteRequest('/system/basic/pos/' + ids).then(resp => {
           this.initPositions()
@@ -169,8 +193,15 @@ export default {
     margin-right: 8px;
     margin-bottom: 16px;
   }
+
   .update_input {
     width: 200px;
     margin: 0 0 8px 8px;
+  }
+
+  .pageable {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 8px;
   }
 </style>
