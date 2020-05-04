@@ -16,9 +16,10 @@ import {
   Collapse, CollapseItem, Card,
   Tree, Popover,
   Loading, Image,
-  Pagination
+  Pagination, Upload
 } from 'element-ui'
 
+Vue.use(Upload);
 Vue.use(Pagination);
 Vue.use(Image);
 Vue.use(Loading.directive);
