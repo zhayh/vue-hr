@@ -16,9 +16,10 @@ import {
   Collapse, CollapseItem, Card,
   Tree,
   Popover,
-  Loading
+  Loading, Image
 } from 'element-ui'
 
+Vue.use(Image);
 Vue.use(Loading.directive);
 Vue.use(Popover)
 Vue.use(Tree)
