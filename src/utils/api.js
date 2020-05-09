@@ -3,6 +3,26 @@ import { Message } from 'element-ui'
 import axios from 'axios'
 import router from '../router'
 
+// 使用 axios发送请求的设置, 在发送请求之前做某件事
+axios.interceptors.request.use(config => {
+  // 设置以 form 表单的形式提交参数，如果以 JSON的形式提交表单，可忽略
+  // if(config.method  === 'post'){
+  //   // JSON 转换为 FormData
+  //   const formData = new FormData()
+  //   console.log(formData)
+  //   Object.keys(config.data).forEach(key => formData.append(key, config.data[key]))
+  //   config.data = formData
+  // }
+  // 将保存在 localStorage的 token添加到请求头
+  if (localStorage.token) {
+    config.headers.Authorization = localStorage.token
+  }
+  return config
+},error =>{
+  Message.error("错误的传参", 'fail')
+  return Promise.reject(error)
+})
+
 // 响应码的拦截
 axios.interceptors.response.use(success => {
   if (success.status && success.status === 200 && success.data.status === 500) {
@@ -11,6 +31,10 @@ axios.interceptors.response.use(success => {
   }
   if (success.data.msg) {
     Message.success({ message: success.data.msg })
+  }
+  if(success.headers.authorization) {
+    // 将 jwt认证的 token 保存在 localStorage 中
+    window.localStorage.token = success.headers.authorization
   }
   return success.data
 }, error => {
