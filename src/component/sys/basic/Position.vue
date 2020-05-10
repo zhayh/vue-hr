@@ -153,7 +153,7 @@ export default {
       if (this.pos.name) {
         const resp = await this.postRequest('/system/basic/pos/', this.pos)
         if (resp) {
-          this.initPositions()
+          await this.initPositions()
           this.pos.name = ''
         }
       } else {
@@ -170,7 +170,7 @@ export default {
     async doUpdate () {
       const resp = await this.putRequest('/system/basic/pos/', this.updatePos)
       if (resp) {
-        this.initPositions()
+        await this.initPositions()
         this.updatePos.name = ''
         this.dialogVisible = false
       }
